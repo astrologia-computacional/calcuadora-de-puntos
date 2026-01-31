@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculadora</title>
+</head>
+<body>
+  <h1>Calculadora de puntos</h1>
+
+  <label>Longitud A (0–360):
+    <input id="a" type="number" step="0.0001" min="0" max="360">
+  </label>
+  <br>
+
+  <label>Longitud B (0–360):
+    <input id="b" type="number" step="0.0001" min="0" max="360">
+  </label>
+  <br>
+
+  <label>Longitud C (0–360):
+    <input id="c" type="number" step="0.0001" min="0" max="360">
+  </label>
+  <br><br>
+
+  <button id="calc">Calcular (A + B − C)</button>
+
+  <p><strong>Resultado (0–360):</strong> <span id="out">—</span></p>
+
+  <script>
+    function norm360(x){
+      x = x % 360;
+      if (x < 0) x += 360;
+      return x;
+    }
+
+    document.getElementById("calc").addEventListener("click", () => {
+      const a = parseFloat(document.getElementById("a").value);
+      const b = parseFloat(document.getElementById("b").value);
+      const c = parseFloat(document.getElementById("c").value);
+
+      if ([a,b,c].some(v => Number.isNaN(v))) {
+        document.getElementById("out").textContent = "Faltan valores";
+        return;
+      }
+
+      const r = norm360(a + b - c);
+      document.getElementById("out").textContent = r.toFixed(4);
+    });
+  </script>
+</body>
+</html>
