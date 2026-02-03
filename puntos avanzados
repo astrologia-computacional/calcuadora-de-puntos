@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Calculadora de puntos</title>
+</head>
+<body>
+  <h1>Calculadora de puntos</h1>
+
+  <label>Ascendente (0–360):
+    <input id="asc" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Urano (0–360):
+    <input id="urano" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Saturno (0–360):
+    <input id="saturno" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Neptuno (0–360):
+    <input id="neptuno" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Venus (0–360):
+    <input id="venus" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Plutón (0–360):
+    <input id="pluton" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Sol (0–360):
+    <input id="sol" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Marte (0–360):
+    <input id="marte" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Mercurio (0–360):
+    <input id="mercurio" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Luna (0–360):
+    <input id="luna" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Lilith (0–360):
+    <input id="lilith" type="number" step="0.0001" min="0" max="360">
+  </label><br>
+
+  <label>Eris (0–360):
+    <input id="eris" type="number" step="0.0001" min="0" max="360">
+  </label><br><br>
+
+  <label>Fórmula:
+    <select id="formula">
+      <option value="uranico">Punto Uránico: Ascendente + Urano - Saturno</option>
+      <option value="neptuniano">Punto Neptuniano: Ascendente + Neptuno - Venus</option>
+      <option value="plutoniano">Punto Plutoniano: Ascendente + Plutón - Sol</option>
+      <option value="saturnino">Punto Saturnino: plutón + saturno × marte</option>
+      <option value="venusino">Punto Venusino: venus + mercurio - luna</option>
+      <option value="autosabotaje">Patrón de autosabotaje inconsciente: Lilith + Luna × Eris</option>
+      <option value="bloqueo_entorno">Bloqueo del entorno: Venus + pluton - neptuno</option>
+    </select>
+  </label><br><br>
+
+  <button id="calc">Calcular</button>
+  <p><strong>Resultado (0–360):</strong> <span id="out">—</span></p>
+
+  <script>
+    function norm360(x){
+      x = x % 360;
+      if (x < 0) x += 360;
+      return x;
+    }
+
+    function v(id){
+      return parseFloat(document.getElementById(id).value);
+    }
+
+    function need(ids){
+      for (const id of ids){
+        const val = v(id);
+        if (Number.isNaN(val)) return null;
+      }
+      const obj = {};
+      for (const id of ids) obj[id] = v(id);
+      return obj;
+    }
+
+    document.getElementById("calc").addEventListener("click", () => {
+      const f = document.getElementById("formula").value;
+      let raw;
+
+      if (f === "uranico") {
+        const x = need(["asc","urano","saturno"]); if (!x) return out("Faltan valores");
+        raw = x.asc + x.urano - x.saturno;
+      } else if (f === "neptuniano") {
+        const x = need(["asc","neptuno","venus"]); if (!x) return out("Faltan valores");
+        raw = x.asc + x.neptuno - x.venus;
+      } else if (f === "plutoniano") {
+        const x = need(["asc","pluton","sol"]); if (!x) return out("Faltan valores");
+        raw = x.asc + x.pluton - x.sol;
+      } else if (f === "saturnino") {
+        const x = need(["pluton","saturno","marte"]); if (!x) return out("Faltan valores");
+        raw = x.pluton + (x.saturno * x.marte);
+      } else if (f === "venusino") {
+        const x = need(["venus","mercurio","luna"]); if (!x) return out("Faltan valores");
+        raw = x.venus + x.mercurio - x.luna;
+      } else if (f === "autosabotaje") {
+        const x = need(["lilith","luna","eris"]); if (!x) return out("Faltan valores");
+        raw = x.lilith + (x.luna * x.eris);
+      } else if (f === "bloqueo_entorno") {
+        const x = need(["venus","pluton","neptuno"]); if (!x) return out("Faltan valores");
+        raw = x.venus + x.pluton - x.neptuno;
+      } else {
+        return out("Fórmula inválida");
+      }
+
+      const r = norm360(raw);
+      out(r.toFixed(4));
+
+      function out(t){ document.getElementById("out").textContent = t; }
+    });
+  </script>
+</body>
+</html>
+Nuevo index con múltiples fórmulas
